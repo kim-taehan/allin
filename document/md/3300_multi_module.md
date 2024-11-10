@@ -57,7 +57,5 @@ classDiagram
         + database 관련
         + Risk 에서만 사용되는 의존 라이브러리
     }
-
-    
    
 ```

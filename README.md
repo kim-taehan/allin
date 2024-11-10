@@ -117,6 +117,8 @@ contentLength=39 // (4)
 - multi module project 는 상호 연결된 여러 개의 module 로 구성된 프로젝트를 의미한다. 
 - [자세히 보기](document%2Fmd%2F3300_multi_module.md)
 
+![img.png](document/images/3400_auto_configuration.png)
+
 ### 3.4 auto configuration
 - Spring Boot의 자동 설정 기능은 의존성만 추가가해주면 Spring Boot가 뒤에서 필요한 설정들(Bean 설정 및 생성)을 자동으로 구성한다.
 - core 에 있는 라이브러리를 자동으로 bean 으로 등록하고 이를 통해서 비지니스 모듈에서 사용할 수 있게 하는 기능
