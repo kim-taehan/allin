@@ -1,0 +1,6 @@
+rootProject.name = 'allin'
+include 'allin-io'
+include 'allin-core'
+include 'allin-betting'
+include 'allin-risk'
+

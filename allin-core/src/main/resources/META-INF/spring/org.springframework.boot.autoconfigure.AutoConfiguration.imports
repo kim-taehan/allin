@@ -1,0 +1,15 @@
+develop.x.core.receiver.ReceiverConfiguration
+
+develop.x.core.executor.ExecutorConfiguration
+
+develop.x.core.exception.advice.ExceptionAdviceConfiguration
+
+develop.x.core.blockingqueue.BlockingQueueConfiguration
+
+develop.x.core.dispatcher.DispatcherConfiguration
+
+develop.x.core.boot.BootConfiguration
+
+develop.x.core.message.MessageConfiguration
+
+develop.x.core.sender.SenderConfiguration

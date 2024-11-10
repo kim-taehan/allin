@@ -1,0 +1,26 @@
+plugins {
+    id 'java'
+}
+
+group = 'develop.x'
+version = '1.0.0'
+bootJar.enabled = false
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+
+
+    implementation project(':allin-io')
+
+    implementation 'com.hazelcast:hazelcast-all:4.2.8'
+
+}
+
+test {
+    useJUnitPlatform()
+}

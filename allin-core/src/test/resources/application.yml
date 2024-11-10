@@ -1,0 +1,12 @@
+
+# default
+spring:
+  profiles:
+    active: test
+  messages:
+    basename: message, errors
+    encoding: UTF-8
+
+allin:
+  message: property
+

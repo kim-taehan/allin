@@ -1,0 +1,22 @@
+
+# default
+spring:
+  profiles:
+    active: local
+  messages:
+    basename: message, errors
+    encoding: UTF-8
+
+allin:
+  message: property
+
+  hazelcast:
+    receivers:
+      - name: risk
+        listener-count: 2
+        worker-count: 5
+    senders:
+      - name: risk
+        sender-count: 1
+
+
