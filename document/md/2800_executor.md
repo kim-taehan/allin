@@ -72,7 +72,7 @@ public class ReceiverXExecutor extends AbstractXExecutor {
 ```
 
 #### 2.8.3 BusinessXExecutor
-- Business Thread 를 관리하는 XExecutor 로 고객사 요청으로 VirtualThread 를 사용한다.
+- Business Thread 를 관리하는 XExecutor 로 VirtualThread 를 사용한다.
 - Business Thread 는 receiver thread 와 연관이 되어 있으므로 이를 감안한 shutdown 프로세스가 호출되게 된다.
 
 ```java

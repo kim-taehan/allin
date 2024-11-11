@@ -149,6 +149,6 @@ contentLength=39 // (4)
 - [자세히 보기](document%2Fmd%2F3700_blockingqueue_performance.md)
 
 ### 3.8 자바 데이터 전송 (serializable)
-- 데이터 전송은 결국 byte[] 데이터를 주고 받는 기능인데, 고객사에게 고성능 전송데이터를 원해서 관련된 내용을 정리하였다. 
+- 데이터 전송은 결국 byte[] 데이터를 주고 받는 기능인데, 고성능 전송데이터를 원해서 관련된 내용을 정리하였다. 
 - 기본적인 java serializable, json 데이터 부터 구글에서 만든 proto buffer, sbe(simple binary encoding)까지 정리한다.
 - [자세히 보기](document%2Fmd%2F3800_serializable.md)
