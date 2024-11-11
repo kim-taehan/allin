@@ -101,7 +101,6 @@ public class BusinessXExecutor extends AbstractXExecutor {
                             // 후처리 프로세스
                         }
                     });
-                    // toto hazelcast 로 처리 하지 못한 데이터들에 대한 처리를 수행한다.
                 }
 
             }
