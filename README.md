@@ -158,6 +158,9 @@ contentLength=39 // (4)
 - application 이 실행되면 미리 일정량은 DB Connection 객체를 생성하고, pool 이라는 공간에 저장한다.
 - [자세히 보기](document%2Fmd%2F3900_dbcp.md)
 
+### 4.0 GC 모델
+
+
 
 ## 5. 개발자 기록 
 ### 5.1 Hikari cp 설정 변경
