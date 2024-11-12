@@ -159,12 +159,14 @@ contentLength=39 // (4)
 - [자세히 보기](document%2Fmd%2F3900_dbcp.md)
 
 ### 4.0 GC 모델
-
+- jdk 21 에서 Concurrent Collectors 는 G1, ZGC 중에 선택하는 것으로 고려하고 있다.
+- ZGC가 낮은 대기시간이 필요한 경우이고 G1 GC는 높은 처리량에 강점이 있다. 
+- [자세히 보기](document%2Fmd%2F4000_gc.md)
 
 
 ## 5. 개발자 기록 
 ### 5.1 Hikari cp 설정 변경
 - allin system 은 hikari cp 를 사용중인데 계속해서 `add connection elided` 라는 메시지가 출력되고, 계속해서 다시 커넥션을 요청하는 것 처럼 보이는 현상이 발생하였다.
-- 원인: max-lifetime 를 30000(30초)로 지정한 상태로 사용하니 idle 상태인 커넥션에 대한 재커넥션을 계속 요청하는 문제가 발생하였다.
+- 원인: max-lifetime 를 30000(30초)로 지정한 상태로 사용하니 idle 상태인 커넥션에 대한 리커넥션을 계속 요청하는 문제가 발생하였다.
 - 해결방법: max-lifetime 를 default 값을 (30분) 으로 설정한다. (DB 타임아웃 시간보다는 적은게 좋다고 한다.)
 - [자세히 보기](document%2Fmd%2F5100_hikari_error.md)
