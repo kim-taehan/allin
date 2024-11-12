@@ -170,3 +170,9 @@ contentLength=39 // (4)
 - 원인: max-lifetime 를 30000(30초)로 지정한 상태로 사용하니 idle 상태인 커넥션에 대한 리커넥션을 계속 요청하는 문제가 발생하였다.
 - 해결방법: max-lifetime 를 default 값을 (30분) 으로 설정한다. (DB 타임아웃 시간보다는 적은게 좋다고 한다.)
 - [자세히 보기](document%2Fmd%2F5100_hikari_error.md)
+
+### 5.2 receiver thread 조절하기 
+- allin system 은 message queue 를 사용해서 타 시스템 요청을 받고 있는데, message queue 솔루션에서 1-2초 이상 queue 에 message 가 대기한다는 이야기를 들었다. 
+- 원인: message queue 응답을 기다리는 thread 이 business thread 들이 처리할 수 있는 처리량보다 적은 요청을 받고 있었다.
+- 해결방법: 각 업무마다 응답을 수신하는 thread 를 조절할 수 있게 하여 business 가 처리할 수 있는 만큼 요청을 받을 수 있게 수정하였다.
+- [자세히 보기](document%2Fmd%2F5200_receiver_thread_control.md)

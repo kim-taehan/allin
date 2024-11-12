@@ -52,6 +52,9 @@ subprojects {
 		testImplementation 'org.springframework.boot:spring-boot-starter-test'
 		testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
+
+		implementation 'com.conversantmedia:disruptor:1.2.16'
+
 	}
 
 

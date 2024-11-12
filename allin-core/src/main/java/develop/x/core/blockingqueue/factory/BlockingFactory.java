@@ -1,5 +1,7 @@
 package develop.x.core.blockingqueue.factory;
 
+import com.conversantmedia.util.concurrent.DisruptorBlockingQueue;
+
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -22,7 +24,7 @@ public enum BlockingFactory {
         @Override
         public <T> BlockingQueue<T> create(int queueSize) {
             // 생략함
-            return new LinkedBlockingQueue<>(queueSize);
+            return new DisruptorBlockingQueue<>(queueSize);
         }
     }
     ;
