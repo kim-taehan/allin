@@ -154,6 +154,8 @@ contentLength=39 // (4)
 - [자세히 보기](document%2Fmd%2F3800_serializable.md)
 
 ### 3.9 Database connection pool (DBCP)
+- Database Connection Pool 의 약자이다. 요청이 올때마다 Connection 객체를 얻는 것이 아닌, 미리 일정 갯수 찍어내서 Connection Pool 로 관리하는 것이다
+- application 이 실행되면 미리 일정량은 DB Connection 객체를 생성하고, pool 이라는 공간에 저장한다.
 - [자세히 보기](document%2Fmd%2F3900_dbcp.md)
 
 
