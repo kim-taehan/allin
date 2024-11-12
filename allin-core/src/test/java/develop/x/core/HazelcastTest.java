@@ -58,6 +58,15 @@ public class HazelcastTest {
         // return
         map.put(key, array);
         queue.put(key);
+        queue.put(key);
+        queue.put(key);
+        queue.put(key);
+        queue.put(key);
+        queue.put(key);
+        queue.put(key);
+        queue.put(key);
+        queue.put(key);
+        queue.put(key);
 
 
 

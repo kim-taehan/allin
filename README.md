@@ -152,3 +152,11 @@ contentLength=39 // (4)
 - 데이터 전송은 결국 byte[] 데이터를 주고 받는 기능인데, 고성능 전송데이터를 원해서 관련된 내용을 정리하였다. 
 - 기본적인 java serializable, json 데이터 부터 구글에서 만든 proto buffer, sbe(simple binary encoding)까지 정리한다.
 - [자세히 보기](document%2Fmd%2F3800_serializable.md)
+
+
+## 5. 개발자 기록 
+### 5.1 Hikari cp 설정 변경
+- allin system 은 hikari cp 를 사용중인데 계속해서 `add connection elided` 라는 메시지가 출력되고, 계속해서 다시 커넥션을 요청하는 것 처럼 보이는 현상이 발생하였다.
+- 원인: max-lifetime 를 30000(30초)로 지정한 상태로 사용하니 idle 상태인 커넥션에 대한 재커넥션을 계속 요청하는 문제가 발생하였다.
+- 해결방법: max-lifetime 를 default 값을 (30분) 으로 설정한다. (DB 타임아웃 시간보다는 적은게 좋다고 한다.)
+- [자세히 보기](document%2Fmd%2F5100_hikari_error.md)

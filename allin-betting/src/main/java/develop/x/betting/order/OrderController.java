@@ -1,18 +1,13 @@
 package develop.x.betting.order;
 
-import develop.x.core.dispatcher.XRequest;
 import develop.x.core.dispatcher.annotation.XController;
 import develop.x.core.dispatcher.annotation.XMapping;
 import develop.x.core.dispatcher.annotation.XModel;
 import develop.x.core.dispatcher.annotation.XParam;
 import develop.x.core.message.XMessageFinder;
 import develop.x.core.sender.XSender;
-import develop.x.io.model.XHeaderOld;
-import develop.x.io.network.XTarget;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.UUID;
 
 @XController
 @Slf4j
@@ -20,19 +15,27 @@ import java.util.UUID;
 public class OrderController {
 
     private final XMessageFinder messageFinder;
-
     private final XSender xSender;
-
-    // 정상 호출되는 일반적인 API @XModel FakeXData data,
     @XMapping("/normal-api")
+    // 정상 호출되는 일반적인 API @XModel FakeXData data,
+
     public void execute(@XParam("url") String url, @XModel TestDto request) {
         log.info("1번째 API 호출됨");
-        XRequest xRequest = new XRequest.Builder()
-                .body(request)
-                .header("url", "/next-api")
-                .header("transactionId", UUID.randomUUID().toString())
-                .build();
-        xSender.send(XTarget.ORDER, xRequest);
+//        XRequest xRequest = new XRequest.Builder()
+//                .body(request)
+//                .header("url", "/next-api")
+//                .header("transactionId", UUID.randomUUID().toString())
+//                .build();
+//        xSender.send(XTarget.ORDER, xRequest);
+
+//        orderMapper.selectAll();
+//        orderMapper.selectAll();
+//        List<Order> orders = orderMapper.selectAll();
+//
+//        log.info("orders.size() = {}", orders.size());
+//        orderMapper.selectAll();
+//        orderMapper.selectAll();
+//        orderMapper.selectAll();
     }
 
 
