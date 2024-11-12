@@ -153,6 +153,9 @@ contentLength=39 // (4)
 - 기본적인 java serializable, json 데이터 부터 구글에서 만든 proto buffer, sbe(simple binary encoding)까지 정리한다.
 - [자세히 보기](document%2Fmd%2F3800_serializable.md)
 
+### 3.9 Database connection pool (DBCP)
+- [자세히 보기](document%2Fmd%2F3900_dbcp.md)
+
 
 ## 5. 개발자 기록 
 ### 5.1 Hikari cp 설정 변경
