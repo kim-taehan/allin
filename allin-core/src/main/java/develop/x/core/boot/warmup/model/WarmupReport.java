@@ -1,8 +1,10 @@
 package develop.x.core.boot.warmup.model;
 
 import lombok.Builder;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+@Getter
 @RequiredArgsConstructor
 public class WarmupReport {
 

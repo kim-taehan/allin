@@ -176,3 +176,10 @@ contentLength=39 // (4)
 - 원인: message queue 응답을 기다리는 thread 이 business thread 들이 처리할 수 있는 처리량보다 적은 요청을 받고 있었다.
 - 해결방법: 각 업무마다 응답을 수신하는 thread 를 조절할 수 있게 하여 business 가 처리할 수 있는 만큼 요청을 받을 수 있게 수정하였다.
 - [자세히 보기](document%2Fmd%2F5200_receiver_thread_control.md)
+
+
+## 9. infra 
+### 9.1 hazelcast 설치 및 기동
+- docker run -it --network hazelcast-network --rm -e HZ_NETWORK_PUBLICADDRESS=127.0.0.1:5701 -e HZ_CLUSTERNAME=hello-world -p 5701:5701 hazelcast/hazelcast:5.5.2
+
+

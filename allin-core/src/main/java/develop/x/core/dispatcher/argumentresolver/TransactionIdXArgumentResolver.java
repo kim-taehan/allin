@@ -14,7 +14,7 @@ public class TransactionIdXArgumentResolver implements XArgumentResolver {
     public boolean support(Parameter parameter) {
         if (parameter.getType().equals(String.class) && parameter.getAnnotatedType().isAnnotationPresent(XParam.class)) {
             XParam xParam = parameter.getAnnotatedType().getAnnotation(XParam.class);
-            return argumentName.contains(xParam.value());
+            return argumentName.contains(xParam.value().toLowerCase());
         }
         return false;
     }
