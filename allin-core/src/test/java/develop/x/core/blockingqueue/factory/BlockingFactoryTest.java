@@ -8,6 +8,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -29,7 +30,7 @@ class BlockingFactoryTest {
         // then
         assertAll(
                 () -> assertThat(blockingQueue.size()).isEqualTo(2),
-                () -> assertThat(blockingQueue.take()).isEqualTo("item01"),
+                () -> assertThat(blockingQueue.poll(100, TimeUnit.MICROSECONDS)).isEqualTo("item01"),
                 () -> assertThat(blockingQueue).isInstanceOf(ArrayBlockingQueue.class)
         );
     }
@@ -50,7 +51,7 @@ class BlockingFactoryTest {
         // then
         assertAll(
                 () -> assertThat(blockingQueue.size()).isEqualTo(2),
-                () -> assertThat(blockingQueue.take()).isEqualTo("item01"),
+                () -> assertThat(blockingQueue.poll(100, TimeUnit.MICROSECONDS)).isEqualTo("item01"),
                 () -> assertThat(blockingQueue).isInstanceOf(LinkedBlockingQueue.class)
         );
     }
@@ -63,14 +64,13 @@ class BlockingFactoryTest {
 
         // when
         BlockingQueue<String> blockingQueue = BlockingFactory.DISRUPTOR_BLOCKING_QUEUE.create(queueSize);
-        blockingQueue.take();
         blockingQueue.put("item01");
         blockingQueue.put("item02");
 
         // then
         assertAll(
                 () -> assertThat(blockingQueue.size()).isEqualTo(2),
-                () -> assertThat(blockingQueue.take()).isEqualTo("item01"),
+                () -> assertThat(blockingQueue.poll(100, TimeUnit.MICROSECONDS)).isEqualTo("item01"),
                 () -> assertThat(blockingQueue).isInstanceOf(DisruptorBlockingQueue.class)
         );
     }
