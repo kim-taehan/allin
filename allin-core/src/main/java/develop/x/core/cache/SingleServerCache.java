@@ -3,7 +3,7 @@ package develop.x.core.cache;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class SingleServerCache<K, V> implements XWritableCache<K, V> {
+public abstract class SingleServerCache<K, V> implements XWritableCache<K, V> {
 
     private final Map<K, V> items = new ConcurrentHashMap<>();
 

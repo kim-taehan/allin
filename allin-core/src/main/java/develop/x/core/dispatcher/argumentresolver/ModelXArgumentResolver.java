@@ -2,7 +2,6 @@ package develop.x.core.dispatcher.argumentresolver;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import develop.x.core.dispatcher.XRequest;
-import develop.x.core.dispatcher.XRequestOld;
 import develop.x.core.dispatcher.annotation.XModel;
 
 import java.io.IOException;

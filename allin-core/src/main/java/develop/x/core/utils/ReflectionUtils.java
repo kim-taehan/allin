@@ -16,10 +16,4 @@ public class ReflectionUtils {
         return clazz.getClass();
     }
 
-    public Object findNoProxyClass2(Object clazz) {
-        if (AopUtils.isAopProxy(clazz)) {
-            return findNoProxyClass(clazz.getClass().getSuperclass());
-        }
-        return clazz;
-    }
 }
