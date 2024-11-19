@@ -6,7 +6,7 @@ import com.hazelcast.map.IMap;
 import develop.x.core.HazelcastFactory;
 import develop.x.core.blockingqueue.AbstractXBlockingQueue;
 import develop.x.core.blockingqueue.XBlockingQueue;
-import develop.x.core.dispatcher.XRequest;
+import develop.x.io.XRequest;
 import develop.x.core.executor.BusinessXExecutor;
 import develop.x.core.sender.XSender;
 import develop.x.io.network.XTarget;

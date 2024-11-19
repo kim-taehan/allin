@@ -1,12 +1,11 @@
 package develop.x.core.dispatcher.argumentresolver;
 
-import develop.x.core.dispatcher.XRequest;
+import develop.x.io.XRequest;
 import develop.x.core.dispatcher.annotation.XParam;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Parameter;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

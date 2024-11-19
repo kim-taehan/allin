@@ -3,6 +3,7 @@ package develop.x.core.dispatcher;
 import develop.x.core.dispatcher.argumentresolver.XArgumentProvider;
 import develop.x.core.dispatcher.handler.XHandler;
 import develop.x.core.dispatcher.handler.XHandlerManager;
+import develop.x.io.XRequest;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

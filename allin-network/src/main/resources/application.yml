@@ -1,0 +1,9 @@
+allin:
+  networks:
+    host: 127.0.0.1
+    port: 45672
+    netty:
+      bossCount: 1
+      workerCount: 1
+      keepAlive: false
+      backlog: 10

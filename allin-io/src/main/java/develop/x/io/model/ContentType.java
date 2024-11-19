@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 @RequiredArgsConstructor
 public enum ContentType  {
+
     JSON(new JsonModelConverter()), SERIALIZE(new SerializableModelConverter());
 
     private final ModelConverter modelConverter;

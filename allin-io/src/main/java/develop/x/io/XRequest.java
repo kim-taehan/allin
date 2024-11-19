@@ -1,7 +1,5 @@
-package develop.x.core.dispatcher;
+package develop.x.io;
 
-import develop.x.core.utils.JsonUtils;
-import develop.x.io.model.ContentType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -60,9 +58,10 @@ public class XRequest {
         }
         sb.append("\n");
         byte[] headerByte = sb.toString().getBytes(StandardCharsets.UTF_8);
-        ByteBuffer buffer = ByteBuffer.wrap(new byte[headerByte.length + body.length]);
+        ByteBuffer buffer = ByteBuffer.wrap(new byte[headerByte.length + body.length + 1]);
         buffer.put(headerByte);
         buffer.put(body);
+        buffer.put("\n".getBytes(StandardCharsets.UTF_8));
         return buffer.array();
     }
 
@@ -90,7 +89,7 @@ public class XRequest {
 
         public XRequest build() {
             if(!headers.containsKey("contentType")){
-                headers.put("contentType", ContentType.JSON.name());
+                headers.put("contentType", "JSON");
             }
             headers.put("contentLength", body.length + "");
             return new XRequest(headers, body);

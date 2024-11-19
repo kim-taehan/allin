@@ -1,10 +1,8 @@
 package develop.x.core.dispatcher.argumentresolver;
 
-import develop.x.core.dispatcher.XRequest;
-import develop.x.core.dispatcher.annotation.XParam;
+import develop.x.io.XRequest;
 
 import java.lang.reflect.Parameter;
-import java.util.Set;
 
 public class XRequestXArgumentResolver implements XArgumentResolver {
 

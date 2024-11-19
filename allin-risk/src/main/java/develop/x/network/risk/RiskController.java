@@ -1,4 +1,4 @@
-package develop.x.risk.risk;
+package develop.x.network.risk;
 
 import develop.x.core.dispatcher.annotation.XController;
 import develop.x.core.dispatcher.annotation.XMapping;

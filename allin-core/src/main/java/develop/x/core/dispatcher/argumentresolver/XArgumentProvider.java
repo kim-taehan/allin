@@ -1,6 +1,6 @@
 package develop.x.core.dispatcher.argumentresolver;
 
-import develop.x.core.dispatcher.XRequest;
+import develop.x.io.XRequest;
 import develop.x.core.dispatcher.handler.XHandler;
 import org.springframework.context.ApplicationContext;
 

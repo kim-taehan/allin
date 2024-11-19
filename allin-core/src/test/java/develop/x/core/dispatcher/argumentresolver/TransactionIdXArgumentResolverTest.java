@@ -1,6 +1,6 @@
 package develop.x.core.dispatcher.argumentresolver;
 
-import develop.x.core.dispatcher.XRequest;
+import develop.x.io.XRequest;
 import develop.x.core.dispatcher.annotation.XParam;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
