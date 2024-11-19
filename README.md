@@ -95,7 +95,7 @@ contentLength=39 // (4)
 - allin system 에서는 그 부분을 직접 control 해야 된다. (다음부터 그냥 http 사용하자)
 - allin system 에서는 executor 는 3가지 모델에서 사용되고 있다. (Business, Receiver, BlockingQueue)
 - 단순한 thread-pool 이 아닌 우아하게 종료될 수 있는 기능이 필요하다.
-- [자세히 보기](document%2Fmd%2F2700_executor.md)
+- [자세히 보기](document%2Fmd%2F2800_executor.md)
 
 
 ## 3. advance subject 
