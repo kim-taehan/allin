@@ -1,7 +1,7 @@
-package develop.x.network.netty.config;
+package develop.x.network.netty.receiver.config;
 
-import develop.x.network.netty.properties.Networks;
-import develop.x.network.netty.socket.NettyChannelInitializer;
+import develop.x.network.netty.receiver.properties.Networks;
+import develop.x.network.netty.receiver.socket.NettyChannelInitializer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;

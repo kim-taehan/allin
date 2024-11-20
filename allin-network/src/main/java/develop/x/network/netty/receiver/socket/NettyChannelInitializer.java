@@ -1,6 +1,6 @@
-package develop.x.network.netty.socket;
-import develop.x.network.netty.decord.TestDecoder;
-import develop.x.network.netty.handler.TestHandler;
+package develop.x.network.netty.receiver.socket;
+import develop.x.network.netty.receiver.decord.XRequestConvertor;
+import develop.x.network.netty.receiver.handler.BusinessHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class NettyChannelInitializer extends ChannelInitializer<SocketChannel> {
 
-    private final TestHandler testHandler;
+    private final BusinessHandler businessHandler;
 
     // 클라이언트 소켓 채널이 생성될 때 호출
     @Override
@@ -24,8 +24,7 @@ public class NettyChannelInitializer extends ChannelInitializer<SocketChannel> {
 //
 //        // 뒤이어 처리할 디코더 및 핸들러 추가
         pipeline.addLast(new LineBasedFrameDecoder(Integer.MAX_VALUE));
-
-        pipeline.addLast(new TestDecoder());
-//        pipeline.addLast(testHandler);
+        pipeline.addLast(new XRequestConvertor());
+        pipeline.addLast(businessHandler);
     }
 }

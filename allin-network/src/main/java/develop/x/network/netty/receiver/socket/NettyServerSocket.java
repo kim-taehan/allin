@@ -1,4 +1,4 @@
-package develop.x.network.netty.socket;
+package develop.x.network.netty.receiver.socket;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;

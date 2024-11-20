@@ -47,8 +47,6 @@ public abstract non-sealed class AbstractXDispatcher implements XDispatcher {
     protected abstract void doRun(XHandler handler, Object[] arguments);
 
     private XRequest convert(byte[] bytes) {
-
-
         return new XRequest(bytes);
     }
 }

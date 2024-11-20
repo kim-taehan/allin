@@ -59,9 +59,6 @@ subprojects {
 
 		implementation 'com.conversantmedia:disruptor:1.2.16'
 
-		// ActiveMQ
-		implementation 'org.springframework.boot:spring-boot-starter-activemq'
-		implementation 'org.apache.activemq:activemq-pool'
 
 		// netty https://mvnrepository.com/artifact/io.netty/netty-all
 //		implementation 'io.netty:netty-all:4.1.114.Final'

@@ -4,6 +4,13 @@ allin:
     port: 45672
     netty:
       bossCount: 1
-      workerCount: 1
+      workerCount: 5
       keepAlive: false
       backlog: 10
+
+
+spring:
+  activemq:
+    broker-url: tcp://localhost:61616
+    user: admin
+    password: admin

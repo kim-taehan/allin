@@ -16,4 +16,5 @@ public class BettingApplication {
         SpringApplication.run(BettingApplication.class, args);
     }
 
+
 }

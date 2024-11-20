@@ -8,6 +8,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.jms.core.JmsTemplate;
 
+import java.nio.charset.StandardCharsets;
+
 public class ActiveMqTest {
 
     @DisplayName("")
@@ -41,6 +43,9 @@ public class ActiveMqTest {
 
         final String text = "Hello from Amazon MQ!";
         TextMessage producerMessage = producerSession.createTextMessage(text);
+
+        BytesMessage bytesMessage = producerSession.createBytesMessage();
+        bytesMessage.writeBytes(text.getBytes(StandardCharsets.UTF_8));
 
         // Send the message.
         producer.send(producerMessage);

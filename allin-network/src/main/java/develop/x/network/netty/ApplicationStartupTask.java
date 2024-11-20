@@ -1,6 +1,6 @@
 package develop.x.network.netty;
 
-import develop.x.network.netty.socket.NettyServerSocket;
+import develop.x.network.netty.receiver.socket.NettyServerSocket;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;

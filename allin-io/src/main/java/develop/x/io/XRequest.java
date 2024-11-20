@@ -21,7 +21,10 @@ public class XRequest {
 
     public XRequest(byte[] bytes) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        for (byte aByte : bytes) {
+
+        for (int i = 0; i < bytes.length-1; i++) {
+
+            byte aByte = bytes[i];
             if (aByte == 10) {
                 if (outputStream.size() > 0) {
                     String[] split = outputStream.toString().split("=");
@@ -32,6 +35,7 @@ public class XRequest {
             }
             outputStream.write(aByte);
         }
+
         this.body = outputStream.toByteArray();
 
         try {

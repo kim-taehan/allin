@@ -1,4 +1,4 @@
-package develop.x.network.netty.properties;
+package develop.x.network.netty.receiver.properties;
 
 public record NettyInfo(
         int bossCount,
