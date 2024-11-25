@@ -1,5 +1,7 @@
 package develop.x.core.cache;
 
+import org.springframework.lang.Nullable;
+
 import java.util.function.Supplier;
 
 /**
@@ -18,6 +20,14 @@ import java.util.function.Supplier;
  */
 public sealed interface XCache<K, V> permits SingleServerReadOnlyCache, XWritableCache {
 
+    /**
+     * cache 에 key 인자로 조회하여 value 데이터를 리턴하는 메서드이다.
+     * 만약 key 해당하는 item 이 없는 경우 null 를 리턴한다.
+     *
+     * @param key - cache 에 저장된 데이터를 조회하기 위한 key 데이터
+     * @return V cache 에 저장된 value 데이터를 전달한다.
+     */
+    @Nullable
     V get(K key);
 
     default V getOrDefault(K key, Supplier<? extends V> supplier){
