@@ -19,7 +19,7 @@ public class ActiveMqConfig {
     @Bean
     public ActiveMQConnectionFactory activeMQConnectionFactory() {
         ActiveMQConnectionFactory activeMQConnectionFactory = new ActiveMQConnectionFactory();
-        activeMQConnectionFactory.setBrokerURL("tcp://localhost:61616");
+                   activeMQConnectionFactory.setBrokerURL("tcp://localhost:61616");
         activeMQConnectionFactory.setMaxThreadPoolSize(10);
         return activeMQConnectionFactory;
     }

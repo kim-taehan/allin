@@ -4,4 +4,5 @@ include 'allin-core'
 include 'allin-betting'
 include 'allin-risk'
 include 'allin-network'
+include 'allin-simulator'
 

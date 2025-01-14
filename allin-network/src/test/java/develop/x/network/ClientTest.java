@@ -83,9 +83,6 @@ public class ClientTest {
         testDto.setName("kimtaehan");
 
 
-
-
-
         ExecutorService cachedThreadPool = Executors.newCachedThreadPool();
         for (int i = 0; i < 100; i++) {
 

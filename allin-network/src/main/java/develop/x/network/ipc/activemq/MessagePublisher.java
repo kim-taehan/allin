@@ -22,7 +22,7 @@ public class MessagePublisher {
         jmsTemplate.convertAndSend(XTarget.RISK.getQueueName(), xRequest.toByte());
     }
 
-    @JmsListener(destination = "TEST",  concurrency = "5-10")
+    @JmsListener(destination = "MQ_RISK",  concurrency = "5-10")
     public void reciveMessage1(byte[] messageDto) {
         log.info("Received1 message: {}", new XRequest(messageDto));
     }

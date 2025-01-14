@@ -181,5 +181,8 @@ contentLength=39 // (4)
 ## 9. infra 
 ### 9.1 hazelcast 설치 및 기동
 - docker run -it --network hazelcast-network --rm -e HZ_NETWORK_PUBLICADDRESS=127.0.0.1:5701 -e HZ_CLUSTERNAME=hello-world -p 5701:5701 hazelcast/hazelcast:5.5.2
+- docker run -p 61616:61616 -p 8161:8161 rmohr/activemq
 
 
+### 9.2 API 게이트웨이
+- [자세히 보기]()
