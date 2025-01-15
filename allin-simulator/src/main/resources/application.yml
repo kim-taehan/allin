@@ -8,8 +8,26 @@ spring:
     default: local
 
   datasource:
-    url: jdbc:h2:mem:~/langrisser
-    #    url: jdbc:h2:tcp://localhost/~/langrisser
+#    url: jdbc:h2:mem:~/allin
+    url: jdbc:h2:tcp://localhost/~/allin
     username: sa
     password:
     driver-class-name: org.h2.Driver
+    hikari:
+      maximum-pool-size: 10 # 최대 커넥션 풀 크기 설정
+
+  jpa:
+    hibernate:
+      ddl-auto: none # 데이터베이스 스키마 자동 생성 방법 (update, create, none 등)
+    show-sql: true # SQL 쿼리 로그 출력 (디버깅 용도)
+    properties:
+      hibernate:
+        format_sql: true # SQL 쿼리 예쁘게 포맷하기
+        use_sql_comments: true # SQL에 주석을 추가해주기 (디버깅 용도)
+    open-in-view: false # 뷰 렌더링 시 세션을 열어두지 않도록 설정 (성능 개선)
+
+  # H2 콘솔 사용을 허용하는 설정 (H2 데이터베이스에서 DB를 직접 볼 수 있도록)
+  h2:
+    console:
+      enabled: true
+      path: /h2-console

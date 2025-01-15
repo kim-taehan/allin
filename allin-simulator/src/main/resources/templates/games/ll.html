@@ -75,22 +75,25 @@
 
 
             <button class="w-100 btn btn-secondary btn-lg" type="submit">구매</button>
+            <!-- alertMessage가 있을 경우 표시 -->
+            <div th:if="${alertMessage}" class="alert alert-danger">
+                <p th:text="${alertMessage}"></p>
+            </div>
         </form>
-
-        <!--        <div class="row">-->
-<!--            <div class="col-md-6 py-2">-->
-<!--                1-->
-<!--            </div>-->
-<!--            <div class="col-md-6 py-2">-->
-<!--              2-->
-<!--            </div>-->
-<!--        </div>-->
     </div>
 
 
 
 
     <script>
+        // 페이지 로드 시 alert 띄우기
+        document.addEventListener("DOMContentLoaded", function() {
+            /* th:if로 메시지 값 확인 */
+            /* th:text로 메시지 내용 적용 */
+            [[${alertMessage}]] && alert([[${alertMessage}]]);
+        });
+
+
         function validateEventIds() {
             // 모든 select 요소들을 찾는다.
             var eventIds = [];

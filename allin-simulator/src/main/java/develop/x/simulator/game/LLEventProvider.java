@@ -1,20 +1,36 @@
 package develop.x.simulator.game;
 
+import develop.x.simulator.game.entity.SaleType;
+import develop.x.simulator.game.entity.TopLlEvnt;
+import develop.x.simulator.game.entity.TopProd;
+import develop.x.simulator.game.repository.TopProdRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Component
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class LLEventProvider {
 
     // todo db 조회로 변경 필요
 
+    private final TopProdRepository topProdRepository;
+
     public LLEvent[] get() {
 
-        return new LLEvent[] {
-                new LLEvent("한국:일본(일반)", "A0001", LLType.WDL),
-                new LLEvent("한국:일본(홀짝)", "A0002", LLType.SNIFFLING),
-                new LLEvent("대구삼성:광주기아(일반)", "B0001", LLType.WDL),
-                new LLEvent("대구삼성:광주기아(핸디캡)", "B0002", LLType.HANDICAP),
-        };
+
+        List<TopProd> topProds = topProdRepository.findByProductTypeAndSaleType("24", SaleType.SALE);
+
+
+        List<TopLlEvnt> topLlEvnt = topProds.get(0).getTopLlEvnt();
+
+        return topLlEvnt.stream().map(
+                topLlEvnt1 -> new LLEvent(topLlEvnt1.getEventName(), topLlEvnt1.getEventId(), LLType.WDL))
+                .toArray(LLEvent[]::new);
+
 
     }
 }

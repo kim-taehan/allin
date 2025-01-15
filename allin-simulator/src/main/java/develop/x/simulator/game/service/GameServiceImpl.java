@@ -19,16 +19,16 @@ public class GameServiceImpl implements GameService {
     @Override
     public boolean buy(LLBuyRequest request) {
 
-        cachedThreadPool.execute(() -> {
-            try (Socket socket = new Socket("127.0.0.1", 45672)) {
-                OutputStream outputStream = socket.getOutputStream();
-                //outputStream.write(xRequest.toByte());
-                outputStream.flush();
-                outputStream.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
+//        cachedThreadPool.execute(() -> {
+//            try (Socket socket = new Socket("127.0.0.1", 45672)) {
+//                OutputStream outputStream = socket.getOutputStream();
+//                //outputStream.write(xRequest.toByte());
+//                outputStream.flush();
+//                outputStream.close();
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
+//        });
 
 
 
