@@ -1,0 +1,69 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <link th:href="@{/css/bootstrap.min.css}"  rel="stylesheet">
+    <link href="../../static/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+</head>
+<body>
+<div class="container pt-3">
+    <form th:action method="post" th:object="${request}">
+        <!-- 전문정보 -->
+        <div class="card">
+            <div class="card-header bg-secondary text-white">
+                조회
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 py-2">
+                        <label for="ticketNumber">ticket 번호</label>
+                        <div class="input-group">
+                            <input type="text" id="ticketNumber" th:field="*{ticketNumber}" class="form-control" placeholder="ticket 번호를 입력하세요">
+                            <button class=" btn btn-secondary btn-sm" type="submit" formaction="/api/query/findTicket"  formmethod="post">조회</button>
+                        </div>
+                    </div>
+                    <div class="col-md-6 py-2">
+                        <label for="option">분류</label>
+                        <select id="option" th:field="*{option}" class="form-select" th:errorclass="field-error">
+                            <option th:each="option : ${queryOptions}" th:value="${option}"
+                                    th:text="${option.text}"></option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3 py-2">
+                        <label for="gameId">게임 ID</label>
+                        <input type="text" id="gameId" th:field="*{gameId}" class="form-control" placeholder="">
+                    </div>
+                    <div class="col-md-3 py-2">
+                        <label for="programTsYear">상품회차년도</label>
+                        <input type="text" id="programTsYear" th:field="*{programTsYear}" class="form-control" placeholder="">
+                    </div>
+                    <div class="col-md-3 py-2">
+                        <label for="programTs">상품회차</label>
+                        <input type="text" id="programTs" th:field="*{programTs}" class="form-control" placeholder="">
+                    </div>
+                    <div class="col-md-3 py-2">
+                        <label for="programDtlTs">상품세부회차</label>
+                        <input type="text" id="programDtlTs" th:field="*{programDtlTs}" class="form-control" placeholder="">
+                    </div>
+                    <div class="col-md-3 py-2">
+                        <label for="evntNum">이벤트번호</label>
+                        <input type="text" id="evntNum" th:field="*{evntNum}" class="form-control" placeholder="">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 py-2">
+                <!-- 판매점 정보 -->
+                <div th:replace="~{api/fragment/tag.html}" ></div>
+            </div>
+            <div class="col-md-6 py-2">
+                <div th:replace="~{api/fragment/apiCall.html}" ></div>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+</html>

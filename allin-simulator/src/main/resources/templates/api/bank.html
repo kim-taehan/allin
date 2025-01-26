@@ -1,0 +1,90 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <link th:href="@{/css/bootstrap.min.css}"  rel="stylesheet">
+    <link href="../../static/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+</head>
+<body>
+<div class="container pt-3">
+    <form th:action method="post" th:object="${request}">
+    <!-- 전문정보 -->
+    <div class="card">
+        <div class="card-header bg-secondary text-white">
+            은행 전문
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12 py-2">
+                    <label for="bankOption">전문 종류 선택</label>
+                    <div class="input-group">
+                        <div id="bankOption" th:each="bankOption : ${bankOptions}" class="form-check form-check-inline me-3">
+                            <input
+                                    type="radio"
+                                    th:field="*{option}"
+                                    th:value="${bankOption}"
+                                    th:id="${bankOption.name()}"
+                                    class="form-check-input"
+                            >
+                            <label th:for="${bankOption.name()}" th:text="${bankOption.text}" class="form-check-label"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 py-2">
+                    <label for="ticketNumber">ticket 번호</label>
+                    <div class="input-group">
+                        <input type="text" id="ticketNumber" th:field="*{ticketNumber}" class="form-control" placeholder="ticket 번호를 입력하세요">
+                        <button class=" btn btn-secondary btn-sm" type="submit" formaction="/api/bank/findTicket"  formmethod="post">조회</button>
+                    </div>
+                </div>
+                <div class="col-md-4 py-2">
+                    <label for="winnings">당첨 금액</label>
+                    <input type="text" id="winnings" th:field="*{winnings}" class="form-control" placeholder="ticket 번호를 입력하세요">
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 py-2">
+            <!-- 판매점 정보 -->
+            <div th:replace="~{api/fragment/tag.html}" ></div>
+        </div>
+        <div class="col-md-6 py-2">
+            <div th:replace="~{api/fragment/apiCall.html}" ></div>
+        </div>
+    </div>
+
+    <!-- 호출 방식 -->
+
+      <!--  <div class="row" style="padding: 15px; border-top: 2px solid #dee2e6;">
+            <div class="col-md-2 py-2">
+                <button class=" btn btn-success btn-lg" type="submit">요청</button>
+            </div>
+        </div>-->
+
+        <div class="col-md-12 py-2 ">
+            <button class=" btn btn-success btn-lg" type="submit">Send</button>
+        </div>
+    </form>
+
+
+    <!-- JavaScript to control input behavior based on selection -->
+    <script>
+        // When the select box value changes
+        document.getElementById('agencyInputType').addEventListener('change', function() {
+            var agencyId = document.getElementById('agencyId');
+            // If "수동 입력" is selected, enable the input
+            if (this.value === 'MANUAL') {
+                agencyId.disabled = false;
+            } else {
+                // If "자동 입력" is selected, disable the input
+                agencyId.disabled = true;
+            }
+        });
+    </script>
+</div>
+</body>
+</html>

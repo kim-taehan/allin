@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div class="card mt-3">
+    <div class="card-header bg-secondary text-white">
+        전문 호출
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6 py-2">
+                <label for="target">호출 서버</label>
+                <select id="target" th:field="*{callMethod.target}" class="form-select" th:errorclass="field-error">
+                    <option th:each="target : ${targets}" th:value="${target}"
+                            th:text="${target}">LIGHT</option>
+                </select>
+            </div>
+            <div class="col-md-6 py-2">
+                <label for="callType">전문 종류 선택</label>
+                <div class="input-group">
+                    <div id="callType" th:each="callType : ${callTypes}" class="form-check form-check-inline me-3">
+                        <input
+                                type="radio"
+                                th:field="*{callMethod.callType}"
+                                th:value="${callType}"
+                                th:id="${callType.name()}"
+                                class="form-check-input"
+                        >
+                        <label th:for="${callType.name()}" th:text="${callType.text}" class="form-check-label"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 py-2" style="display: none;">
+                <label for="count">전문 개수</label>
+                <div class="input-group">
+                    <input type="number" id="count" th:field="*{callMethod.count}" class="form-control" placeholder="">건
+                </div>
+            </div>
+            <div class="col-md-3 py-2" style="display: none;">
+                <label for="delay">Delay</label>
+                <div class="input-group">
+                    <input type="number" id="delay" th:field="*{callMethod.delay}" class="form-control" placeholder="">ms
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const callTypeInputs = document.querySelectorAll("input[name='callMethod.callType']");
+        const countField = document.getElementById("count").closest(".col-md-3");
+        const delayField = document.getElementById("delay").closest(".col-md-3");
+
+        function toggleFields() {
+            const selectedCallType = document.querySelector("input[name='callMethod.callType']:checked")?.value;
+
+            if (selectedCallType === "SINGLE") { // 특정 타입일 때 필드 보이게
+                countField.style.display = "none";
+                delayField.style.display = "none";
+            } else { // 다른 타입일 때 숨기기
+                countField.style.display = "block";
+                delayField.style.display = "block";
+            }
+        }
+
+        // 초기 상태 설정
+        toggleFields();
+
+        // callType 선택 시 필드 업데이트
+        callTypeInputs.forEach(input => {
+            input.addEventListener("change", toggleFields);
+        });
+    });
+</script>
+
+

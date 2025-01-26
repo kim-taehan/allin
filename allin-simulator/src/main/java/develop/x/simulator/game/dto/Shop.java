@@ -1,0 +1,25 @@
+package develop.x.simulator.game.dto;
+
+import develop.x.simulator.game.enums.AgencyInputType;
+import develop.x.simulator.game.enums.CancelOption;
+import lombok.Builder;
+import org.apache.logging.log4j.util.Strings;
+
+@Builder
+public record Shop(
+        AgencyInputType agencyInputType,
+        String agencyId,
+        String shopId,
+        String tagId
+) {
+    public static Shop init() {
+        return Shop.builder()
+                .agencyInputType(AgencyInputType.AUTO)
+                .agencyId(Strings.EMPTY)
+                .shopId("60011")
+                .tagId("1")
+                .build();
+    }
+
+
+}
