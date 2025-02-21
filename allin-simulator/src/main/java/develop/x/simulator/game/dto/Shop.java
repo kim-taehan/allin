@@ -1,7 +1,6 @@
 package develop.x.simulator.game.dto;
 
-import develop.x.simulator.game.enums.AgencyInputType;
-import develop.x.simulator.game.enums.CancelOption;
+import develop.x.simulator.game.service.enums.AgencyInputType;
 import lombok.Builder;
 import org.apache.logging.log4j.util.Strings;
 

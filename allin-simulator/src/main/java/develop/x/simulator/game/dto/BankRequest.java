@@ -1,6 +1,6 @@
 package develop.x.simulator.game.dto;
 
-import develop.x.simulator.game.enums.BankOption;
+import develop.x.simulator.game.service.enums.BankOption;
 import lombok.Builder;
 import org.apache.logging.log4j.util.Strings;
 

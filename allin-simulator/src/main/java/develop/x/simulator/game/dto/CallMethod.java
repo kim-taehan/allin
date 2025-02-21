@@ -1,7 +1,7 @@
 package develop.x.simulator.game.dto;
 
-import develop.x.simulator.game.enums.CallType;
-import develop.x.simulator.game.enums.Target;
+import develop.x.simulator.game.service.enums.CallType;
+import develop.x.simulator.game.service.enums.Target;
 import lombok.Builder;
 
 @Builder

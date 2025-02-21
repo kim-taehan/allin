@@ -1,10 +1,9 @@
 package develop.x.simulator.game.controller;
 
-import develop.x.simulator.game.dto.CancelRequest;
 import develop.x.simulator.game.dto.QueryRequest;
-import develop.x.simulator.game.enums.CallType;
-import develop.x.simulator.game.enums.QueryOption;
-import develop.x.simulator.game.enums.Target;
+import develop.x.simulator.game.service.enums.CallType;
+import develop.x.simulator.game.service.enums.QueryOption;
+import develop.x.simulator.game.service.enums.Target;
 import develop.x.simulator.game.service.QueryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

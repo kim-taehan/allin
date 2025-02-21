@@ -1,4 +1,4 @@
-package develop.x.simulator.game.enums;
+package develop.x.simulator.game.service.enums;
 
 import lombok.RequiredArgsConstructor;
 

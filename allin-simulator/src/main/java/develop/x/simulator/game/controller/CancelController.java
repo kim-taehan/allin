@@ -1,9 +1,9 @@
 package develop.x.simulator.game.controller;
 
 import develop.x.simulator.game.dto.CancelRequest;
-import develop.x.simulator.game.enums.CallType;
-import develop.x.simulator.game.enums.CancelOption;
-import develop.x.simulator.game.enums.Target;
+import develop.x.simulator.game.service.enums.CallType;
+import develop.x.simulator.game.service.enums.CancelOption;
+import develop.x.simulator.game.service.enums.Target;
 import develop.x.simulator.game.service.CancelService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
