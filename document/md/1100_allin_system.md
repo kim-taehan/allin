@@ -43,3 +43,4 @@
 - RFP에서 시뮬레이터 구현 요구사항이 있으며, 기존 AS-IS(Java Swing)에서도 동일한 기능을 제공
 - TO-BE에서는 Web 기반으로 구현 (Spring Boot, Thymeleaf, JPA, Hazelcast)
 ![img_1.png](img_1.png)
+
