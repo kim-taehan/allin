@@ -17,9 +17,9 @@ public class ReceiverConfiguration {
     private final HzReceivers hzReceivers;
 
 
-    @Bean
-    public HazelcastXReceiver hazelcastXReceiver(ReceiverXExecutor receiverXExecutor, XDispatcher xDispatcher) {
-        return new HazelcastXReceiver(hzReceivers, receiverXExecutor, xDispatcher);
-    }
+    //@Bean
+    //public HazelcastXReceiver hazelcastXReceiver(ReceiverXExecutor receiverXExecutor, XDispatcher xDispatcher) {
+    //    return new HazelcastXReceiver(hzReceivers, receiverXExecutor, xDispatcher);
+    //}
 
 }

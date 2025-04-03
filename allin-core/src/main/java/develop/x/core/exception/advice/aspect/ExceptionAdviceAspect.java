@@ -19,10 +19,10 @@ public class ExceptionAdviceAspect {
     @Pointcut("@annotation(develop.x.core.dispatcher.annotation.XMapping)")
     public void xMapping(){}
 
-    @Pointcut("@develop.x.core.blockingqueue.annotation.XBlockingQueueMapping)")
+    @Pointcut("@annotation(develop.x.core.blockingqueue.annotation.XBlockingQueueMapping)")
     public void xBlockingQueueMapping(){}
 
-    @Around("xMapping() || xBlockingQueueMapping")
+    @Around("xMapping() || xBlockingQueueMapping()")
     public Object processCustomAnnotation(ProceedingJoinPoint joinPoint) throws Throwable {
         try{
             return joinPoint.proceed();

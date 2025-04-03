@@ -15,8 +15,8 @@ public class SenderConfiguration {
 
     private final HzSenders hzSenders;
 
-    @Bean
-    public XSender hazelcastXSender(){
-        return new HazelcastXSender(hzSenders);
-    }
+    //@Bean
+    //public XSender hazelcastXSender(){
+    //    return new HazelcastXSender(hzSenders);
+    //}
 }

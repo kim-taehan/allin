@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 public class BusinessXExecutor extends AbstractXExecutor {
 
     public BusinessXExecutor() {
-        super(Executors.newVirtualThreadPerTaskExecutor());
+        super(Executors.newFixedThreadPool(100));
     }
 
     @Override

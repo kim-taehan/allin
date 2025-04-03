@@ -20,6 +20,14 @@ dependencies {
     // ActiveMQ
     implementation 'org.springframework.boot:spring-boot-starter-activemq'
     implementation 'org.apache.activemq:activemq-pool'
+
+
+    // Spring Remoting (RMI 지원)
+//    implementation 'org.springframework:spring-context-support'
+
+    // https://mvnrepository.com/artifact/org.springframework/spring-remoting
+    implementation("org.springframework:spring-remoting:1.2.9")
+
 }
 
 test {
