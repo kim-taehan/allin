@@ -3,7 +3,6 @@ package develop.x.core.sender.hazelcast;
 import com.hazelcast.collection.IQueue;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
-import develop.x.core.HazelcastFactory;
 import develop.x.core.blockingqueue.AbstractXBlockingQueue;
 import develop.x.core.blockingqueue.XBlockingQueue;
 import develop.x.io.XRequest;
@@ -20,9 +19,15 @@ public class HazelcastXSender implements XSender {
 
     private final Map<XTarget, XBlockingQueue<XRequest>> blockingQueueMap = new HashMap<>();
 
-    public HazelcastXSender(HzSenders hzSenders) {
+    private final HzSenders hzSenders;
+    private final HazelcastInstance instance;
 
-        HazelcastInstance instance = HazelcastFactory.getInstance();
+    public HazelcastXSender(HzSenders hzSenders, HazelcastInstance instance) {
+        this.hzSenders = hzSenders;
+        this.instance = instance;
+    }
+
+    public void start() {
         for (HzSender sender : hzSenders.senders()) {
             log.info("sender = {}", sender);
             XTarget xTarget = XTarget.valueOf(sender.name().toUpperCase());
