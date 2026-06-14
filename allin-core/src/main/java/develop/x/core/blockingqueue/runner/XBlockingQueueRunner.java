@@ -57,7 +57,8 @@ public class XBlockingQueueRunner implements ApplicationRunner {
                     } catch (IllegalAccessException | InvocationTargetException e) {
                         throw new RuntimeException(e);
                     } catch (IllegalArgumentException e) {
-                        log.error("");
+                        log.error("XBlockingQueueMapping 핸들러 인자 타입이 일치하지 않습니다. method={}, itemType={}",
+                                method, item == null ? "null" : item.getClass().getName(), e);
                     }
                 });
             }

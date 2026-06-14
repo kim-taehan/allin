@@ -9,9 +9,9 @@ public non-sealed interface XWritableCache<K, V> extends XCache<K,V> {
 
     void put(K key, V value);
 
+    V computeIfAbsent(K key, Supplier<? extends V> supplier);
+
     default V getIfAbsent(K key, Supplier<? extends V> supplier){
-        V newValue = getOrDefault(key, supplier);
-        put(key, newValue);
-        return newValue;
+        return computeIfAbsent(key, supplier);
     }
 }

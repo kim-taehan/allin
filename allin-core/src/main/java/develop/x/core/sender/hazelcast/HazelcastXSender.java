@@ -11,13 +11,16 @@ import develop.x.core.sender.XSender;
 import develop.x.io.network.XTarget;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
 public class HazelcastXSender implements XSender {
 
     private final Map<XTarget, XBlockingQueue<XRequest>> blockingQueueMap = new HashMap<>();
+    private final List<BusinessXExecutor> workerExecutors = new ArrayList<>();
 
     private final HzSenders hzSenders;
     private final HazelcastInstance instance;
@@ -34,10 +37,18 @@ public class HazelcastXSender implements XSender {
             IMap<String, byte[]> iMap = instance.getMap(xTarget.getMapName());
             IQueue<String> iQueue = instance.getQueue(xTarget.getQueueName());
             HzSenderBq hzSenderBq = new HzSenderBq(1000, sender.senderCount());
-            hzSenderBq.run(new BusinessXExecutor(), xRequest -> {
+            BusinessXExecutor workerExecutor = new BusinessXExecutor();
+            workerExecutors.add(workerExecutor);
+            hzSenderBq.run(workerExecutor, xRequest -> {
                 sendHazelcast(xRequest, iMap, iQueue);
             });
             blockingQueueMap.put(xTarget, hzSenderBq);
+        }
+    }
+
+    public void shutdown() {
+        for (BusinessXExecutor workerExecutor : workerExecutors) {
+            workerExecutor.shutdown();
         }
     }
 

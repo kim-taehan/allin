@@ -40,7 +40,11 @@ public abstract non-sealed class AbstractXDispatcher implements XDispatcher {
         try {
             doRun(handler, arguments);
         } catch (RuntimeException e) {
-            log.error("처리할 수 없는 exception 발생하였습니다. ", e);
+            // 유일 구현(VirtualThreadDispatcher)의 doRun 은 비동기 submit 이라, 핸들러 비즈니스 예외는
+            // 워커 스레드 VirtualThreadRunnable.run() 의 InvocationTargetException catch 에서 처리되며
+            // 여기로 전파되지 않는다. 이 catch 에 도달하는 것은 acquire 인터럽트 래핑/RejectedExecution 등
+            // 디스패치 인프라성 예외다. 소비 루프를 보호하기 위해 재throw 하지 않고 url 컨텍스트와 함께 로깅한다.
+            log.error("처리할 수 없는 exception 발생하였습니다. url={}", request.getHeaders().get("url"), e);
         }
     }
 
