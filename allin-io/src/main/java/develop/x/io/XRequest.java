@@ -20,29 +20,45 @@ public class XRequest {
     private byte[] body;
 
     public XRequest(byte[] bytes) {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ByteArrayOutputStream lineBuffer = new ByteArrayOutputStream();
 
-        for (int i = 0; i < bytes.length-1; i++) {
-
+        int bodyStart = 0;
+        boolean separatorFound = false;
+        for (int i = 0; i < bytes.length; i++) {
             byte aByte = bytes[i];
             if (aByte == 10) {
-                if (outputStream.size() > 0) {
-                    String[] split = outputStream.toString().split("=");
-                    headers.put(split[0].trim(), split[1].trim());
-                    outputStream = new ByteArrayOutputStream();
+                if (lineBuffer.size() == 0) {
+                    // 빈 줄: header/body 경계. 다음 바이트부터 body.
+                    bodyStart = i + 1;
+                    separatorFound = true;
+                    break;
                 }
+                String[] split = lineBuffer.toString(StandardCharsets.UTF_8).split("=", 2);
+                headers.put(split[0].trim(), split.length > 1 ? split[1].trim() : "");
+                lineBuffer.reset();
                 continue;
             }
-            outputStream.write(aByte);
+            lineBuffer.write(aByte);
         }
 
-        this.body = outputStream.toByteArray();
+        // 경계 빈 줄이 없으면(포맷 외 입력) 헤더를 채택하지 않고 전체를 body 로 본다.
+        if (!separatorFound) {
+            headers.clear();
+            bodyStart = 0;
+        }
 
         try {
-            outputStream.close();
+            lineBuffer.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        // body: 경계 이후 끝까지. toByte() 가 붙인 종단 개행 1개만 제거.
+        int bodyEnd = bytes.length;
+        if (bodyEnd > bodyStart && bytes[bodyEnd - 1] == 10) {
+            bodyEnd--;
+        }
+        this.body = bodyStart >= bodyEnd ? new byte[0] : Arrays.copyOfRange(bytes, bodyStart, bodyEnd);
     }
 
     private XRequest(Map<String, String> headers, byte[] body) {

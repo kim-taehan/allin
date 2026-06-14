@@ -6,6 +6,7 @@ import develop.x.core.dispatcher.handler.DefaultXHandler;
 import develop.x.core.dispatcher.handler.XHandler;
 import develop.x.core.utils.JsonUtils;
 import develop.x.io.XRequest;
+import develop.x.io.id.XIdGenerator;
 import lombok.Data;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.lang.reflect.Method;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -71,7 +71,7 @@ class XArgumentProviderTest {
         dto.setAge(40);
 
         String url = "/order-api";
-        String txId = UUID.randomUUID().toString();
+        String txId = XIdGenerator.nextTransactionId();
 
         XRequest request = new XRequest.Builder()
                 .header("url", url)

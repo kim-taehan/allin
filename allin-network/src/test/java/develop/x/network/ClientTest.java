@@ -8,9 +8,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import develop.x.io.id.XIdGenerator;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -25,7 +25,7 @@ public class ClientTest {
         testDto.setName("kimtaehan");
 
         XRequest xRequest = new XRequest.Builder()
-                .header("transactionId", UUID.randomUUID().toString())
+                .header("transactionId", XIdGenerator.nextTransactionId())
                 .body(JsonUtils.toByte(testDto))
                 .build();
 
@@ -56,12 +56,12 @@ public class ClientTest {
         testDto2.setName("kininho");
 
         XRequest xRequest1 = new XRequest.Builder()
-                .header("transactionId", UUID.randomUUID().toString())
+                .header("transactionId", XIdGenerator.nextTransactionId())
                 .body(JsonUtils.toByte(testDto1))
                 .build();
 
         XRequest xRequest2 = new XRequest.Builder()
-                .header("transactionId", UUID.randomUUID().toString())
+                .header("transactionId", XIdGenerator.nextTransactionId())
                 .body(JsonUtils.toByte(testDto2))
                 .build();
 
@@ -87,7 +87,7 @@ public class ClientTest {
         for (int i = 0; i < 100; i++) {
 
             XRequest xRequest = new XRequest.Builder()
-                    .header("transactionId", UUID.randomUUID().toString())
+                    .header("transactionId", XIdGenerator.nextTransactionId())
                     .body(JsonUtils.toByte(testDto))
                     .build();
 

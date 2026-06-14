@@ -1,6 +1,7 @@
 package develop.x.core.dispatcher.argumentresolver;
 
 import develop.x.io.XRequest;
+import develop.x.io.id.XIdGenerator;
 import develop.x.core.dispatcher.annotation.XModel;
 import develop.x.core.dispatcher.annotation.XParam;
 import org.junit.jupiter.api.DisplayName;
@@ -9,7 +10,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.lang.reflect.Parameter;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -38,7 +38,7 @@ class NullableXArgumentResolverTest {
         // given : 자신의 Controller 파라미터 사용(타 테스트 클래스 의존 제거)
         Parameter parameter = ArgumentResolverUtils.findParameter(Controller.class, "handle", "annotated");
         XRequest xRequest = new XRequest.Builder()
-                .header("transactionId", UUID.randomUUID().toString())
+                .header("transactionId", XIdGenerator.nextTransactionId())
                 .body(new byte[10])
                 .build();
 
