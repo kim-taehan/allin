@@ -36,18 +36,32 @@ class ThrowableExArgumentResolverTest {
 
 
     @Test
-    @DisplayName("Throwable 의 에러메시지를 변환해준다.")
+    @DisplayName("convert 는 전달받은 바로 그 Throwable 인스턴스를 그대로 반환한다(새 객체 생성/치환 금지).")
     void returnThrowable(){
 
         // given
-        String errorMsg = "hello Exception";
         RuntimeException helloException = new RuntimeException("hello Exception");
 
         // when
-        Object message = argumentResolver.convert(helloException, null);
+        Object throwable = argumentResolver.convert(helloException, null);
+
+        // then : 타입뿐 아니라 동일 인스턴스여야 한다.
+        assertThat(throwable).isSameAs(helloException);
+    }
+
+    @Test
+    @DisplayName("convert 는 args 와 무관하게 throwable 동일 인스턴스를 반환하며, 다른 Throwable 하위 타입도 그대로 보존한다.")
+    void returnThrowablePreservesExactInstanceIgnoringArgs(){
+
+        // given : checked Exception 하위 타입도 그대로 보존되어야 한다.
+        IllegalStateException ex = new IllegalStateException("state");
+        Object[] args = {"a", 1};
+
+        // when
+        Object resolved = argumentResolver.convert(ex, args);
 
         // then
-        assertThat(message).isInstanceOf(RuntimeException.class);
+        assertThat(resolved).isSameAs(ex);
     }
 
 

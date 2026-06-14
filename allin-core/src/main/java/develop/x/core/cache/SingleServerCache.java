@@ -2,6 +2,7 @@ package develop.x.core.cache;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 
 public abstract class SingleServerCache<K, V> implements XWritableCache<K, V> {
 
@@ -35,5 +36,10 @@ public abstract class SingleServerCache<K, V> implements XWritableCache<K, V> {
     @Override
     public void put(K key, V value) {
         this.items.put(key, value);
+    }
+
+    @Override
+    public V computeIfAbsent(K key, Supplier<? extends V> supplier) {
+        return this.items.computeIfAbsent(key, k -> supplier.get());
     }
 }

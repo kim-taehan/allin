@@ -3,15 +3,20 @@ package develop.x.core.sender.hazelcast;
 import com.hazelcast.collection.IQueue;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
+import develop.x.core.executor.AbstractXExecutor;
+import develop.x.core.executor.BusinessXExecutor;
 import develop.x.io.XRequest;
 import develop.x.io.network.XTarget;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.invocation.InvocationOnMock;
 
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,8 +41,32 @@ import static org.mockito.Mockito.when;
  */
 class HazelcastXSenderTest {
 
+    private HazelcastXSender sender;
+
+    @AfterEach
+    void tearDown() {
+        // start() 가 만든 워커 풀(BusinessXExecutor, 고정 100스레드)의 누수 방지.
+        // shutdown() 이 워커 take() 를 인터럽트해 종료시킨다.
+        if (sender != null) {
+            sender.shutdown();
+        }
+    }
+
     private HzSenders sendersOf(HzSender... senders) {
         return new HzSenders(List.of(senders));
+    }
+
+    @SuppressWarnings("unchecked")
+    private static List<BusinessXExecutor> workerExecutorsOf(HazelcastXSender sender) throws Exception {
+        Field f = HazelcastXSender.class.getDeclaredField("workerExecutors");
+        f.setAccessible(true);
+        return (List<BusinessXExecutor>) f.get(sender);
+    }
+
+    private static ExecutorService internalExecutorService(AbstractXExecutor executor) throws Exception {
+        Field f = AbstractXExecutor.class.getDeclaredField("executorService");
+        f.setAccessible(true);
+        return (ExecutorService) f.get(executor);
     }
 
     @Test
@@ -56,7 +85,7 @@ class HazelcastXSenderTest {
     @DisplayName("send: start() 를 호출하지 않은 상태에서는 blockingQueueMap 이 비어 있어 조용히 false 를 반환한다(리뷰 m1 문서화).")
     void sendReturnsFalseBeforeStart() {
         HazelcastInstance instance = mock(HazelcastInstance.class);
-        HazelcastXSender sender = new HazelcastXSender(sendersOf(new HzSender("ORDER", 1)), instance);
+        sender = new HazelcastXSender(sendersOf(new HzSender("ORDER", 1)), instance);
 
         XRequest request = new XRequest.Builder()
                 .header("transactionId", "tx-1")
@@ -79,8 +108,7 @@ class HazelcastXSenderTest {
         when(instance.<String, byte[]>getMap(anyString())).thenReturn(iMap);
         when(instance.<String>getQueue(anyString())).thenReturn(iQueue);
 
-        HazelcastXSender sender =
-                new HazelcastXSender(sendersOf(new HzSender("ORDER", 1)), instance);
+        sender = new HazelcastXSender(sendersOf(new HzSender("ORDER", 1)), instance);
 
         sender.start();
 
@@ -113,8 +141,7 @@ class HazelcastXSenderTest {
             return null;
         }).when(iQueue).put(anyString());
 
-        HazelcastXSender sender =
-                new HazelcastXSender(sendersOf(new HzSender("ORDER", 1)), instance);
+        sender = new HazelcastXSender(sendersOf(new HzSender("ORDER", 1)), instance);
         sender.start();
 
         XRequest request = new XRequest.Builder()
@@ -137,6 +164,41 @@ class HazelcastXSenderTest {
     }
 
     @Test
+    @DisplayName("shutdown: start() 가 타겟마다 생성한 워커 executor 가 shutdown() 호출 시 모두 종료된다(누수 해소).")
+    void shutdownTerminatesWorkerExecutorsCreatedByStart() throws Exception {
+        HazelcastInstance instance = mock(HazelcastInstance.class);
+        @SuppressWarnings("unchecked")
+        IMap<String, byte[]> iMap = mock(IMap.class);
+        @SuppressWarnings("unchecked")
+        IQueue<String> iQueue = mock(IQueue.class);
+        when(instance.<String, byte[]>getMap(anyString())).thenReturn(iMap);
+        when(instance.<String>getQueue(anyString())).thenReturn(iQueue);
+
+        // 타겟 2개 -> start() 가 BusinessXExecutor 2개를 생성해 워커가 Disruptor take() 에 블로킹한다.
+        sender = new HazelcastXSender(
+                sendersOf(new HzSender("ORDER", 1), new HzSender("RISK", 1)), instance);
+        sender.start();
+
+        List<BusinessXExecutor> workers = workerExecutorsOf(sender);
+        assertThat(workers)
+                .as("start() 가 타겟마다 워커 executor 를 생성해 보관해야 한다")
+                .hasSize(2);
+
+        // when : shutdown() -> 보관된 각 executor 의 graceful shutdown 으로 워커 take() 가 인터럽트된다.
+        sender.shutdown();
+
+        // then : 모든 워커 풀이 종료되어 누수가 없어야 한다.
+        for (BusinessXExecutor worker : workers) {
+            ExecutorService internal = internalExecutorService(worker);
+            assertThat(internal.isShutdown()).as("워커 executor 는 shutdown 요청 상태여야 한다").isTrue();
+            assertThat(internal.awaitTermination(10, TimeUnit.SECONDS))
+                    .as("워커 take() 가 인터럽트되어 풀이 완전 종료되어야 한다")
+                    .isTrue();
+            assertThat(internal.isTerminated()).isTrue();
+        }
+    }
+
+    @Test
     @DisplayName("send: start() 이후라도 등록되지 않은 타겟(RISK)으로 보내면 false 를 반환한다.")
     void sendReturnsFalseForUnregisteredTarget() {
         HazelcastInstance instance = mock(HazelcastInstance.class);
@@ -148,8 +210,7 @@ class HazelcastXSenderTest {
         when(instance.<String>getQueue(anyString())).thenReturn(iQueue);
 
         // ORDER 만 등록
-        HazelcastXSender sender =
-                new HazelcastXSender(sendersOf(new HzSender("ORDER", 1)), instance);
+        sender = new HazelcastXSender(sendersOf(new HzSender("ORDER", 1)), instance);
         sender.start();
 
         XRequest request = new XRequest.Builder()

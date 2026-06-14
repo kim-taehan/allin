@@ -23,20 +23,31 @@ class XHandlerManagerTest {
     @DisplayName("정상적으로 등록된 @XMapping 메서드는 handler 로 등록된고 이를 url 정보로 찾을 수 있다.")
     void findXMappingHandler() throws InvocationTargetException, IllegalAccessException {
 
-        // given
+        // given : 한 컨텍스트에 두 컨트롤러(/order-api, /cancel-api)가 공존
         ApplicationContext context = new AnnotationConfigApplicationContext(SimpleConfig.class);
         XHandlerManager xHandlerManager = context.getBean(XHandlerManager.class);
+        OrderController orderController = context.getBean(OrderController.class);
         CancelController cancelController = context.getBean(CancelController.class);
 
-        // when
-        XHandler handler = xHandlerManager.findHandler("/cancel-api");
-        handler.method().invoke(handler.bean());
+        // when : 각 url 로 핸들러를 조회해 실제 호출
+        XHandler cancelHandler = xHandlerManager.findHandler("/cancel-api");
+        cancelHandler.method().invoke(cancelHandler.bean());
 
+        XHandler orderHandler = xHandlerManager.findHandler("/order-api");
+        orderHandler.method().invoke(orderHandler.bean());
 
+        // then : 각 url 이 올바른 bean/method 로 매핑되고 교차 매핑이 없어야 한다.
         assertAll(
-                () -> assertThat(handler.method().getName()).isEqualTo("cancel"),
-                () -> assertThat(handler.bean()).isEqualTo(cancelController),
-                () -> assertThat(cancelController.callCount).isEqualTo(1)
+                // cancel
+                () -> assertThat(cancelHandler.method().getName()).isEqualTo("cancel"),
+                () -> assertThat(cancelHandler.bean()).isSameAs(cancelController),
+                () -> assertThat(cancelController.callCount).isEqualTo(1),
+                () -> assertThat(orderController.callCount).isEqualTo(1),
+                // order
+                () -> assertThat(orderHandler.method().getName()).isEqualTo("order"),
+                () -> assertThat(orderHandler.bean()).isSameAs(orderController),
+                // 교차 매핑 없음: order 핸들러의 bean 이 cancelController 가 아니어야 한다
+                () -> assertThat(orderHandler.bean()).isNotSameAs(cancelController)
         );
     }
 

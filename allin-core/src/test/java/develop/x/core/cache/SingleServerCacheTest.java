@@ -57,12 +57,12 @@ class SingleServerCacheTest {
 
         // when
         boolean isFeb = monthCache.containsKey(2);
-        boolean isOct = monthCache.containsKey(12);
+        boolean isDec = monthCache.containsKey(12);
 
         // then
         assertAll(
                 () -> assertThat(isFeb).isTrue(),
-                () -> assertThat(isOct).isFalse()
+                () -> assertThat(isDec).isFalse()
         );
     }
 
@@ -93,6 +93,38 @@ class SingleServerCacheTest {
         assertAll(
                 () -> assertThat(monthCache.size()).isEqualTo(12),
                 () -> assertThat(monthCache.get(12)).isEqualTo("12월")
+        );
+    }
+
+    @Test
+    @DisplayName("putAll 에 기존 key 가 포함되면 해당 값을 덮어쓴다.")
+    void putAllOverwritesExistingKey() {
+
+        // given - 1월(기존)과 11월(신규)을 함께 입력. 1월 값은 덮어써야 한다.
+        Map<Integer, String> addItems = Map.of(1, "January", 11, "11월");
+
+        // when
+        monthCache.putAll(addItems);
+
+        // then
+        assertAll(
+                () -> assertThat(monthCache.size()).isEqualTo(11),
+                () -> assertThat(monthCache.get(1)).isEqualTo("January"),
+                () -> assertThat(monthCache.get(11)).isEqualTo("11월")
+        );
+    }
+
+    @Test
+    @DisplayName("put 으로 기존 key 의 값을 갱신할 수 있다.")
+    void putUpdatesExistingKey() {
+
+        // given & when
+        monthCache.put(1, "January");
+
+        // then
+        assertAll(
+                () -> assertThat(monthCache.get(1)).isEqualTo("January"),
+                () -> assertThat(monthCache.size()).isEqualTo(10)
         );
     }
 
