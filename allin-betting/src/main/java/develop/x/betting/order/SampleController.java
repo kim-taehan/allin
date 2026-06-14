@@ -23,7 +23,7 @@ public class SampleController {
 //        XRequest xRequest = new XRequest.Builder()
 //                .body(request)
 //                .header("url", "/next-api")
-//                .header("transactionId", UUID.randomUUID().toString())
+//                .header("transactionId", XIdGenerator.nextTransactionId())
 //                .build();
 //        xSender.send(XTarget.ORDER, xRequest);
 
