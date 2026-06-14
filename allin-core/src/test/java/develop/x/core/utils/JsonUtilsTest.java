@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class JsonUtilsTest {
 
@@ -23,6 +24,38 @@ class JsonUtilsTest {
 
         // then
         assertThat(convertDto).isEqualTo(testDto);
+    }
+
+    @Test
+    @DisplayName("깨진 byte[] 를 역직렬화하면 RuntimeException 으로 래핑되어 던져진다.")
+    void toObjectThrowsOnBrokenBytes() {
+        // given - 유효한 JSON 이 아닌 바이트
+        byte[] brokenBytes = new byte[]{1, 2, 3};
+
+        // when & then
+        assertThatThrownBy(() -> JsonUtils.toObject(brokenBytes, TestDto.class))
+                .isInstanceOf(RuntimeException.class);
+    }
+
+    @Test
+    @DisplayName("타입과 호환되지 않는 JSON 을 역직렬화하면 RuntimeException 으로 래핑되어 던져진다.")
+    void toObjectThrowsOnTypeMismatch() {
+        // given - age 는 int 인데 문자열을 넣어 매핑 실패를 유도
+        byte[] mismatch = "{\"username\":\"x\",\"age\":\"not-a-number\"}".getBytes();
+
+        // when & then
+        assertThatThrownBy(() -> JsonUtils.toObject(mismatch, TestDto.class))
+                .isInstanceOf(RuntimeException.class);
+    }
+
+    @Test
+    @DisplayName("직렬화할 수 없는 객체를 byte[] 로 변환하면 RuntimeException 으로 래핑되어 던져진다.")
+    void toByteThrowsOnUnserializable() {
+        // given - getter 가 예외를 던지는 객체
+
+        // when & then
+        assertThatThrownBy(() -> JsonUtils.toByte(new ThrowingGetterDto()))
+                .isInstanceOf(RuntimeException.class);
     }
 
 
@@ -42,6 +75,12 @@ class JsonUtilsTest {
         @Override
         public int hashCode() {
             return Objects.hash(username, age);
+        }
+    }
+
+    public static class ThrowingGetterDto {
+        public String getValue() {
+            throw new IllegalStateException("getter 실패");
         }
     }
 

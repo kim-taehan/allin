@@ -51,8 +51,8 @@ class XRequestXArgumentResolverTest {
         // when
         XRequest convert = (XRequest) resolver.convert(parameter, xRequest);
 
-        // then
-        assertThat(convert).isEqualTo(xRequest);
+        // then : 새 인스턴스가 아니라 전달받은 동일 request 를 반환해야 한다.
+        assertThat(convert).isSameAs(xRequest);
 
     }
 

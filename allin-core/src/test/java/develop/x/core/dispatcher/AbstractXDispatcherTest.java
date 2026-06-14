@@ -3,10 +3,17 @@ package develop.x.core.dispatcher;
 import develop.x.core.dispatcher.argumentresolver.XArgumentProvider;
 import develop.x.core.dispatcher.handler.XHandler;
 import develop.x.core.dispatcher.handler.XHandlerManager;
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 import develop.x.io.XRequest;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -17,6 +24,23 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class AbstractXDispatcherTest {
+
+    /** AbstractXDispatcher 의 로그를 캡처해 "조용히 삼킴"이 아님을 단언하기 위한 appender. */
+    private Logger dispatcherLogger;
+    private ListAppender<ILoggingEvent> logAppender;
+
+    @BeforeEach
+    void attachAppender() {
+        dispatcherLogger = (Logger) LoggerFactory.getLogger(AbstractXDispatcher.class);
+        logAppender = new ListAppender<>();
+        logAppender.start();
+        dispatcherLogger.addAppender(logAppender);
+    }
+
+    @AfterEach
+    void detachAppender() {
+        dispatcherLogger.detachAppender(logAppender);
+    }
 
     /**
      * url 헤더를 가진 XRequest 가 만들어지도록 byte[] 를 생성한다.
@@ -84,8 +108,8 @@ class AbstractXDispatcherTest {
     }
 
     @Test
-    @DisplayName("doRun 이 RuntimeException 을 던져도 invoke 는 예외를 전파하지 않고 삼킨다(로깅만).")
-    void invokeSwallowsRuntimeExceptionFromDoRun() {
+    @DisplayName("doRun 의 RuntimeException 은 (의도된 인프라성 fallback 으로) 호출 스레드로 전파되지 않되, 조용히 사라지지 않고 url 컨텍스트와 예외가 ERROR 로 로깅된다.")
+    void invokeSwallowsRuntimeExceptionFromDoRunButLogsIt() {
         // given
         XHandlerManager handlerManager = mock(XHandlerManager.class);
         XArgumentProvider provider = mock(XArgumentProvider.class);
@@ -95,12 +119,26 @@ class AbstractXDispatcherTest {
         when(provider.convertArguments(any(), any())).thenReturn(new Object[0]);
 
         CapturingDispatcher dispatcher = new CapturingDispatcher(handlerManager, provider);
-        dispatcher.toThrow = new IllegalStateException("business boom");
+        IllegalStateException boom = new IllegalStateException("business boom");
+        dispatcher.toThrow = boom;
 
-        // when / then : 예외가 전파되지 않아야 한다.
+        // when : 예외가 호출 스레드로 전파되지 않아야 한다(비전파는 의도된 설계).
         dispatcher.invoke(requestBytesWithUrl("order.bet"));
 
+        // then-1 : 부수효과 — doRun 은 실제로 1회 호출되었다(예외 발생 지점에 도달).
         assertThat(dispatcher.doRunCallCount).isEqualTo(1);
+
+        // then-2 : "조용히 삼킴"이 아님을 보장 — catch 블록이 비면 이 단언이 깨진다(회귀 탐지).
+        //          ERROR 레벨로, 원 예외를 throwable 로 동반하고, url 컨텍스트를 남겨야 한다.
+        assertThat(logAppender.list)
+                .as("RuntimeException 삼킴 시 ERROR 로그가 반드시 남아야 한다(빈 catch 회귀 방지)")
+                .anySatisfy(event -> {
+                    assertThat(event.getLevel()).isEqualTo(Level.ERROR);
+                    assertThat(event.getThrowableProxy()).isNotNull();
+                    assertThat(event.getThrowableProxy().getMessage()).contains("business boom");
+                    // url 컨텍스트(MDC 가 아닌 포맷 인자)가 메시지에 반영되었는지 확인
+                    assertThat(event.getFormattedMessage()).contains("order.bet");
+                });
     }
 
     @Test

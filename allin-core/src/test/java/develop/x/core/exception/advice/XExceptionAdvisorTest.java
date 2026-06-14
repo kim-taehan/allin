@@ -57,12 +57,15 @@ class XExceptionAdvisorTest {
 
 
     @Test
-    @DisplayName("동일한 Exception advice도 ExAdviceOrder 차이가 있다면 정상적으로 처리될 수 있다.")
+    @DisplayName("동일 RuntimeException 핸들러가 둘이면 ExAdviceOrder index 가 작은 쪽(BUSINESS<SYSTEM)이 선택되고, 진 advice(SYSTEM)는 호출되지 않는다.")
     void duplicatedExButAdviceLevel() {
-        // given
+        // given : ExAdviceA(BUSINESS, index=2) vs DuplicationAdviceDiffExAdviceOrder(SYSTEM, index=3)
+        //         compareAdvice 는 index 오름차순 정렬 -> BUSINESS 가 find() 에서 먼저 매칭되어야 한다.
         ApplicationContext applicationContext = new AnnotationConfigApplicationContext(TestConfig.class);
         XExceptionAdvisor xExceptionAdvisor = applicationContext.getBean(XExceptionAdvisor.class);
         ExAdviceA exAdviceA = applicationContext.getBean(ExAdviceA.class);
+        DuplicationAdviceDiffExAdviceOrder systemAdvice =
+                applicationContext.getBean(DuplicationAdviceDiffExAdviceOrder.class);
 
         Object[] args = {"kimtaehan", 1234};
         String message = "Exception test";
@@ -70,12 +73,16 @@ class XExceptionAdvisorTest {
         // when
         boolean isCallExAdvice = xExceptionAdvisor.run(new RuntimeException(message), args);
 
-        // then
+        // then : 양방향 단언 — 이긴 쪽(ExAdviceA)은 호출, 진 쪽(SYSTEM)은 미호출.
         Assertions.assertAll(
                 () -> assertThat(isCallExAdvice).isTrue(),
                 () -> assertThat(exAdviceA.throwable).isInstanceOf(RuntimeException.class),
                 () -> assertThat(exAdviceA.args).isEqualTo(args),
-                () -> assertThat(exAdviceA.message).isEqualTo(message));
+                () -> assertThat(exAdviceA.message).isEqualTo(message),
+                () -> assertThat(systemAdvice.called)
+                        .as("index 가 더 큰 SYSTEM advice 는 우선순위에서 밀려 호출되면 안 된다")
+                        .isFalse()
+        );
     }
 
 
@@ -179,8 +186,11 @@ class XExceptionAdvisorTest {
 
     @XExAdvice(ExAdviceOrder.SYSTEM)
     static class DuplicationAdviceDiffExAdviceOrder {
+        public boolean called = false;
+
         @XExHandler({RuntimeException.class})
         public void runtime() {
+            this.called = true;
         }
     }
 

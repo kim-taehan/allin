@@ -103,20 +103,32 @@ class HazelcastXReceiverTest {
     }
 
     @Test
-    @DisplayName("bind: worker(workerCount) + listener(listenerCount) 만큼 주입된 executor.execute 로 작업을 등록한다.")
+    @DisplayName("bind: worker(workerCount) 와 listener(listenerCount) 를 각각의 개수만큼 분리 등록한다(인자 뒤바뀜 검출).")
     void bindRegistersWorkersAndListeners() {
         HazelcastInstance instance = mock(HazelcastInstance.class);
         CapturingExecutor executor = new CapturingExecutor();
         stubHandles(instance);
 
-        // listenerCount=3, workerCount=2 -> execute 총 5회(worker 2 + listener 3)
+        // 비대칭 값으로 worker/listener 매핑을 구분 검증한다.
+        // HzReceiver(name, listenerCount, workerCount) -> listenerCount=3, workerCount=1
+        // listener 는 ListenerRunnable 인스턴스, worker 는 HzMiddleBq.run 의 소비 람다(ListenerRunnable 아님).
         HazelcastXReceiver receiver = new HazelcastXReceiver(
-                receiversOf(new HzReceiver("ORDER", 3, 2)),
+                receiversOf(new HzReceiver("ORDER", 3, 1)),
                 executor, new NoopDispatcher(), instance);
 
         receiver.bind();
 
-        assertThat(executor.submitted).hasSize(5);
+        long listenerCount = executor.submitted.stream()
+                .filter(r -> r instanceof HazelcastXReceiver.ListenerRunnable)
+                .count();
+        long workerCount = executor.submitted.stream()
+                .filter(r -> !(r instanceof HazelcastXReceiver.ListenerRunnable))
+                .count();
+
+        // 총합(4)만이 아니라 각각을 분리 검증 -> listenerCount/workerCount 가 뒤바뀌면 실패한다.
+        assertThat(executor.submitted).hasSize(4);
+        assertThat(listenerCount).as("listenerCount(3) 만큼 ListenerRunnable 이 등록되어야 한다").isEqualTo(3);
+        assertThat(workerCount).as("workerCount(1) 만큼 worker 소비 람다가 등록되어야 한다").isEqualTo(1);
     }
 
     @Test

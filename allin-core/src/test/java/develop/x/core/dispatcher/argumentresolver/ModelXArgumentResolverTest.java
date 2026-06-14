@@ -11,6 +11,7 @@ import java.lang.reflect.Parameter;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class ModelXArgumentResolverTest {
 
@@ -61,6 +62,21 @@ class ModelXArgumentResolverTest {
 
         // then
         assertThat(convert).isEqualTo(testDto);
+    }
+
+    @Test
+    @DisplayName("body 가 깨진 JSON 이면 IOException 을 RuntimeException 으로 래핑해 던진다.")
+    void convertWrapsIOExceptionAsRuntimeException() {
+        // given : '{' 만 있는 불완전 JSON
+        Parameter parameter = ArgumentResolverUtils.findParameter(Controller.class, "xModel", "xModel");
+        XRequest xRequest = new XRequest.Builder()
+                .header("transactionId", UUID.randomUUID().toString())
+                .body(new byte[]{0x7B}) // "{"
+                .build();
+
+        // when / then
+        assertThatThrownBy(() -> resolver.convert(parameter, xRequest))
+                .isInstanceOf(RuntimeException.class);
     }
 
     static abstract class Controller {

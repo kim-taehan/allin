@@ -40,18 +40,33 @@ class MessageExArgumentResolverTest {
     }
 
     @Test
-    @DisplayName("Throwable 의 에러메시지를 변환해준다.")
+    @DisplayName("convert 는 throwable.getMessage() 를 반환하며, args 는 결과에 영향을 주지 않는다.")
     void returnErrorMsg(){
 
         // given
         String errorMsg = "hello Exception";
-        RuntimeException helloException = new RuntimeException("hello Exception");
+        RuntimeException helloException = new RuntimeException(errorMsg);
+        Object[] args = {"ignored", 1};
 
-        // when
-        Object message = argumentResolver.convert(helloException, null);
+        // when : args 를 넘겨도 메시지 resolver 는 args 를 무시해야 한다.
+        Object message = argumentResolver.convert(helloException, args);
 
         // then
         assertThat(message).isEqualTo(errorMsg);
+    }
+
+    @Test
+    @DisplayName("메시지가 없는 예외(getMessage()==null)는 null 을 반환한다.")
+    void returnNullWhenNoMessage(){
+
+        // given : 메시지 없는 RuntimeException
+        RuntimeException noMessage = new RuntimeException();
+
+        // when
+        Object message = argumentResolver.convert(noMessage, null);
+
+        // then
+        assertThat(message).isNull();
     }
 
 

@@ -1,5 +1,6 @@
 package develop.x.core.executor;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -14,6 +15,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class AbstractXExecutorTest {
+
+    private TestXExecutor executor;
+
+    @AfterEach
+    void tearDown() throws Exception {
+        // 단언 실패로 shutdown 이 호출되지 못한 경우의 스레드 누수 방지.
+        if (executor != null) {
+            internalExecutorService(executor).shutdownNow();
+        }
+    }
 
     /** 테스트용 구체 서브클래스 (shutdown 은 단순 위임). */
     static class TestXExecutor extends AbstractXExecutor {
@@ -37,7 +48,7 @@ class AbstractXExecutorTest {
     @DisplayName("execute(Runnable) 로 제출한 작업이 실제로 실행된다.")
     void executeRunsSubmittedTask() throws Exception {
         // given
-        TestXExecutor executor = new TestXExecutor(Executors.newCachedThreadPool());
+        executor = new TestXExecutor(Executors.newCachedThreadPool());
         CountDownLatch latch = new CountDownLatch(1);
 
         // when
@@ -46,7 +57,7 @@ class AbstractXExecutorTest {
         // then
         boolean completed = latch.await(2, TimeUnit.SECONDS);
         assertThat(completed).isTrue();
-        executor.shutdown();
+        // 정리는 @AfterEach 에서 보장(단언 실패 시에도 누수 없음).
     }
 
     @Test
@@ -54,7 +65,7 @@ class AbstractXExecutorTest {
     void constructorWrapsWithUnconfigurableExecutorService() throws Exception {
         // given
         ExecutorService original = Executors.newFixedThreadPool(2);
-        TestXExecutor executor = new TestXExecutor(original);
+        executor = new TestXExecutor(original);
 
         // when
         ExecutorService internal = internalExecutorService(executor);
@@ -62,12 +73,12 @@ class AbstractXExecutorTest {
         // then : 동일 인스턴스가 아니다 (불변 래퍼로 재생성).
         assertThat(internal).isNotSameAs(original);
 
-        // then : 래퍼는 ThreadPoolExecutor 가 아니므로 다운캐스트 시 ClassCastException.
+        // then : 관찰 가능한 계약 - 외부에서 풀 재설정이 불가능하다(ThreadPoolExecutor 로 다운캐스트 불가).
         assertThatThrownBy(() -> {
             ThreadPoolExecutor tpe = (ThreadPoolExecutor) internal;
             tpe.setCorePoolSize(1);
         }).isInstanceOf(ClassCastException.class);
 
-        executor.shutdown();
+        // 정리는 @AfterEach 에서 보장.
     }
 }
