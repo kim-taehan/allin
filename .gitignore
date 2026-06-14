@@ -38,3 +38,6 @@ out/
 
 ### Claude Code orchestration scratch ###
 _workspace/
+
+# Claude Code 개인 설정 (push 전 테스트 hook 등)
+.claude/settings.local.json
