@@ -1,6 +1,7 @@
 package develop.x.core.dispatcher.argumentresolver;
 
 import develop.x.io.XRequest;
+import develop.x.io.id.XIdGenerator;
 import develop.x.core.dispatcher.annotation.XModel;
 import develop.x.core.utils.JsonUtils;
 import lombok.Data;
@@ -8,7 +9,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Parameter;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -53,7 +53,7 @@ class ModelXArgumentResolverTest {
         testDto.setAge(40);
         testDto.setName("kimtaehan");
         XRequest xRequest = new XRequest.Builder()
-                .header("transactionId", UUID.randomUUID().toString())
+                .header("transactionId", XIdGenerator.nextTransactionId())
                 .body(JsonUtils.toByte(testDto))
                 .build();
 
@@ -70,7 +70,7 @@ class ModelXArgumentResolverTest {
         // given : '{' 만 있는 불완전 JSON
         Parameter parameter = ArgumentResolverUtils.findParameter(Controller.class, "xModel", "xModel");
         XRequest xRequest = new XRequest.Builder()
-                .header("transactionId", UUID.randomUUID().toString())
+                .header("transactionId", XIdGenerator.nextTransactionId())
                 .body(new byte[]{0x7B}) // "{"
                 .build();
 
