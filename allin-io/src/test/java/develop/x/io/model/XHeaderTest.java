@@ -1,58 +1,38 @@
 package develop.x.io.model;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.io.*;
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThat;
 
 class XHeaderTest {
 
-    @DisplayName("XHeader byte 변환과 객체 변환을 확인한다.")
+    /**
+     * 주의: 현재 {@link XHeader#convertByte()} 는 미완성 스텁이다.
+     * url/transactionId/contentType/contentLength 필드를 전혀 직렬화하지 않고
+     * 무조건 길이 10의 0-바이트 배열을 반환한다.
+     * (구현부의 60바이트 ByteBuffer 도 채워지지 않은 채 버려진다.)
+     *
+     * 따라서 이 테스트는 "현재 동작(스텁)"을 고정(characterization)하는 용도이며,
+     * fixed-length 직렬화가 실제로 구현되면 반드시 갱신되어야 한다.
+     * 메인 소스의 미완성 사항은 별도 보고 대상이다.
+     */
+    @DisplayName("convertByte 는 현재 미완성 스텁으로 길이 10의 0-바이트 배열을 반환한다.")
     @Test
-    void test498() throws JsonProcessingException {
+    void convertByteReturnsStub() {
+        XHeader header = new XHeader(
+                "/test-api",
+                UUID.randomUUID().toString(),
+                ContentType.JSON,
+                42
+        );
 
+        byte[] result = header.convertByte();
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        ObjectNode objectNode = objectMapper.createObjectNode();
-        objectNode.put("username", "kimtaehan\nTest");
-        objectNode.put("age", 30);
-        byte[] bodyByte = objectMapper.writeValueAsBytes(objectNode);
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("url=/test-api\n");
-        sb.append("transactionId=");
-        sb.append(UUID.randomUUID());
-        sb.append("\n");
-        sb.append("contentType=JSON\n");
-        sb.append("contentLength=");
-        sb.append(bodyByte.length);
-        sb.append("\n");
-        sb.append("\n");
-        byte[] headerByte = sb.toString().getBytes(StandardCharsets.UTF_8);
-
-        ByteBuffer buffer = ByteBuffer.wrap(new byte[headerByte.length + bodyByte.length]);
-        buffer.put(headerByte);
-        buffer.put(bodyByte);
-        byte[] array = buffer.array();
-
-
-        String string = new String(array);
-        String[] split = string.split("\n");
-        for (String s : split) {
-            System.out.println("s = " + s);
-        }
-//        "\n".getBytes(StandardCharsets.UTF_8)
-
+        // 스텁이므로 입력 필드와 무관하게 항상 동일한 결과
+        assertThat(result).hasSize(10);
+        assertThat(result).containsOnly((byte) 0);
     }
-
-
-
 }
