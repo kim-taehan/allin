@@ -30,6 +30,7 @@ public class BlockingQueueXExecutor extends AbstractXExecutor {
             log.error("blocking queue shutdownAndAwaitTermination end");
         } catch (InterruptedException e) {
             this.executorService.shutdownNow();
+            Thread.currentThread().interrupt();
         }
     }
 }
