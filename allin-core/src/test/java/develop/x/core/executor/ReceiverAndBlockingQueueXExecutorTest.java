@@ -7,6 +7,7 @@ import java.lang.reflect.Field;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -78,5 +79,56 @@ class ReceiverAndBlockingQueueXExecutorTest {
 
         // then
         assertThat(interrupted.await(2, TimeUnit.SECONDS)).isTrue();
+    }
+
+    @Test
+    @DisplayName("ReceiverXExecutor.shutdown(): awaitTermination 이 인터럽트되면 인터럽트 상태를 재설정한다.")
+    void receiverShutdownReinterruptsOnInterrupt() throws Exception {
+        assertShutdownReinterruptsOnInterruptedAwait(new ReceiverXExecutor());
+    }
+
+    @Test
+    @DisplayName("BlockingQueueXExecutor.shutdown(): awaitTermination 이 인터럽트되면 인터럽트 상태를 재설정한다.")
+    void blockingQueueShutdownReinterruptsOnInterrupt() throws Exception {
+        assertShutdownReinterruptsOnInterruptedAwait(new BlockingQueueXExecutor());
+    }
+
+    /**
+     * shutdown() 의 awaitTermination 이 InterruptedException 으로 빠질 때
+     * catch 블록이 Thread.currentThread().interrupt() 로 인터럽트 상태를 복원하는지 검증한다.
+     * <p>
+     * shutdownNow 의 인터럽트를 무시하고 살아남는 작업을 제출해 풀을 깨어있게 만들고,
+     * 호출 스레드를 미리 인터럽트하면 awaitTermination 이 즉시 InterruptedException 을 던져 catch 경로를 결정적으로 탄다.
+     */
+    private void assertShutdownReinterruptsOnInterruptedAwait(AbstractXExecutor executor) throws Exception {
+        ExecutorService internal = internalExecutorService(executor);
+        CountDownLatch started = new CountDownLatch(1);
+        AtomicBoolean keepRunning = new AtomicBoolean(true);
+
+        executor.execute(() -> {
+            started.countDown();
+            while (keepRunning.get()) {
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException ignored) {
+                    // shutdownNow 의 인터럽트를 무시하고 풀을 살려둬 awaitTermination 이 실제로 블로킹되게 한다.
+                }
+            }
+        });
+        assertThat(started.await(2, TimeUnit.SECONDS)).isTrue();
+
+        // 호출 스레드를 미리 인터럽트 → shutdown() 내부 awaitTermination 이 InterruptedException 을 던지고 catch 진입
+        Thread.currentThread().interrupt();
+        try {
+            executor.shutdown();
+
+            assertThat(Thread.currentThread().isInterrupted())
+                    .as("shutdown() 의 InterruptedException catch 가 인터럽트 상태를 재설정해야 한다")
+                    .isTrue();
+        } finally {
+            Thread.interrupted();          // 후속 테스트 오염 방지: 인터럽트 상태 클리어
+            keepRunning.set(false);        // 살아있는 워커 종료
+            internal.awaitTermination(2, TimeUnit.SECONDS);
+        }
     }
 }

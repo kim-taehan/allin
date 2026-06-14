@@ -30,6 +30,7 @@ public class ReceiverXExecutor extends AbstractXExecutor {
             log.error("receiver shutdownAndAwaitTermination end");
         } catch (InterruptedException e) {
             this.executorService.shutdownNow();
+            Thread.currentThread().interrupt();
         }
     }
 }
