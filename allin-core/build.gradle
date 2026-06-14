@@ -14,6 +14,13 @@ dependencies {
     testImplementation platform('org.junit:junit-bom:5.9.1')
     testImplementation 'org.junit.jupiter:junit-jupiter'
 
+    testImplementation 'org.mockito:mockito-core:5.7.0'
+    testImplementation 'org.mockito:mockito-junit-jupiter:5.7.0'
+    // 빌드/테스트 JVM 이 Java 23 이므로, JDK 23 클래스파일(v67)을 처리할 수 있는
+    // ByteBuddy 로 강제 정렬한다(Mockito 5.7.0 의 기본 1.14.x 는 Java 23 미지원).
+    testImplementation 'net.bytebuddy:byte-buddy:1.15.11'
+    testImplementation 'net.bytebuddy:byte-buddy-agent:1.15.11'
+
 
     implementation project(':allin-io')
 

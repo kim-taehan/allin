@@ -3,7 +3,6 @@ package develop.x.core.receiver.hazelcast;
 import com.hazelcast.collection.IQueue;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
-import develop.x.core.HazelcastFactory;
 import develop.x.core.blockingqueue.AbstractXBlockingQueue;
 import develop.x.core.blockingqueue.XBlockingQueue;
 import develop.x.core.dispatcher.XDispatcher;
@@ -22,12 +21,13 @@ public class HazelcastXReceiver implements XReceiver {
     private final HzReceivers hzReceivers;
     private final XExecutor executor;
     private final XDispatcher xDispatcher;
+    private final HazelcastInstance instance;
 
-    public HazelcastXReceiver(HzReceivers hzReceivers, XExecutor executor, XDispatcher xDispatcher) {
+    public HazelcastXReceiver(HzReceivers hzReceivers, XExecutor executor, XDispatcher xDispatcher, HazelcastInstance instance) {
         this.hzReceivers = hzReceivers;
         this.executor = executor;
         this.xDispatcher = xDispatcher;
-        bind();
+        this.instance = instance;
     }
 
     @Override
@@ -41,7 +41,6 @@ public class HazelcastXReceiver implements XReceiver {
         log.info("hazelcast receiver = {}", receiver);
         XTarget xTarget = findXTarget(receiver);
 
-        HazelcastInstance instance = HazelcastFactory.getInstance();
         IQueue<String> queue = instance.getQueue(xTarget.getQueueName());
         IMap<String , Object> map = instance.getMap(xTarget.getMapName());
 
