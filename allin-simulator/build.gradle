@@ -1,0 +1,12 @@
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Spring MVC: @Controller/@GetMapping/@PostMapping/@ModelAttribute, org.springframework.ui.Model, RedirectAttributes
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    // templates/*.html 렌더
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    // DTO init()의 org.apache.logging.log4j.util.Strings.EMPTY 사용 (Spring Boot BOM이 버전 관리)
+    implementation 'org.apache.logging.log4j:log4j-api'
+}
